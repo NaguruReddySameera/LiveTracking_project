@@ -9,7 +9,8 @@ dj-database-url==2.1.0
 
 # Password Hashing
 argon2-cffi==23.1.0
-
+# Image Processing (Required for ImageField)
+Pillow==10.1.0
 # CORS
 django-cors-headers==4.3.1
 
