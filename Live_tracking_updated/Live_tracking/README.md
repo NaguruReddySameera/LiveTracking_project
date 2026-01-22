@@ -2,6 +2,10 @@
 
 ## Project Status: In Development
 
+**Note:** Legacy Node client and server have been archived to `archive/` to simplify deployment; keep `frontend/` and `backend/` for active development.
+
+**Documentation:** Detailed internal docs have been moved to `archive/docs/` to reduce repository clutter — the main `README.md` and backend/frontend READMEs remain in the project root and respective folders.
+
 This workspace contains a **Django + Django REST Framework + React.js** maritime vessel tracking platform with comprehensive role-based access control and external API integrations.
 
 ## Project Structure
@@ -168,8 +172,10 @@ Live_tracking/
 1. **Clone and install dependencies:**
 ```bash
 cd Live_tracking
-npm install
-cd client && npm install && cd ..
+# Backend (Django)
+cd backend && pip install -r requirements.txt && cd ..
+# Frontend (React)
+cd frontend && npm install && cd ..
 ```
 
 2. **Configure environment:**
@@ -178,17 +184,20 @@ cp .env.example .env
 # Edit .env with your configuration
 ```
 
-3. **Initialize database:**
+3. **Initialize database (Django):**
 ```bash
-npm run migrate
+cd backend && python manage.py migrate && cd ..
 ```
 
-4. **Start development servers:**
+4. **Start development servers (in separate terminals):**
 ```bash
-npm run dev:full
+# Backend
+cd backend && python manage.py runserver 0.0.0.0:8000
+# Frontend
+cd frontend && npm start
 ```
 
-The API runs on `http://localhost:5000`  
+The API runs on `http://localhost:8000`  
 The client runs on `http://localhost:3000`
 
 ## API Endpoints
@@ -284,7 +293,7 @@ docker-compose up -d
 
 ### Production Build
 ```bash
-cd client && npm run build
+cd frontend && npm run build
 npm start
 ```
 

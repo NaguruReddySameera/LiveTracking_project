@@ -15,12 +15,10 @@
 
 ```bash
 # Install backend dependencies
-npm install
+cd backend && pip install -r requirements.txt && cd ..
 
 # Install frontend dependencies
-cd client
-npm install
-cd ..
+cd frontend && npm install && cd ..
 ```
 
 ### 2. Configure Environment
@@ -50,15 +48,12 @@ nano .env
 ### 3. Setup Database
 
 ```bash
-# Start MongoDB (if not running)
+# Start PostgreSQL (if not running)
 # Option 1: Using Docker
-docker run -d -p 27017:27017 --name mongodb mongo:6
-
-# Option 2: System service
-sudo systemctl start mongod
+docker run -d -p 5432:5432 --name maritime_db -e POSTGRES_DB=maritime_db -e POSTGRES_USER=maritime_user -e POSTGRES_PASSWORD=maritime_pass postgres:15-alpine
 
 # Seed database with sample data
-node src/database/seed.js
+cd backend && python init_data.py && cd ..
 ```
 
 This will create:
@@ -70,20 +65,17 @@ This will create:
 ### 4. Run Development Server
 
 ```bash
-# Terminal 1: Start backend
-npm run dev
+# Terminal 1: Start backend (Django)
+cd backend && python manage.py runserver 0.0.0.0:8000
 
-# Terminal 2: Start frontend
-npm run client
-
-# OR run both concurrently
-npm run dev:full
+# Terminal 2: Start frontend (React)
+cd frontend && npm start
 ```
 
 **Access Points:**
 - Frontend: http://localhost:3000
-- Backend API: http://localhost:5000
-- API Health: http://localhost:5000/api/health
+- Backend API: http://localhost:8000
+- API Health: http://localhost:8000/api/health
 
 ## Test Credentials
 
@@ -116,7 +108,7 @@ Live_tracking/
 │   ├── utils/               # Helper functions
 │   ├── jobs/                # Cron jobs for data sync
 │   └── database/            # Migration and seed scripts
-├── client/                   # React frontend
+├── frontend/                   # React frontend
 │   ├── src/
 │   │   ├── components/      # Reusable UI components
 │   │   ├── pages/           # Page components
@@ -147,7 +139,7 @@ tail -f logs/combined.log
 ### Frontend Development
 
 ```bash
-cd client
+cd frontend
 npm start
 
 # Build for production
@@ -230,21 +222,21 @@ docker-compose down
 
 1. **Build frontend:**
 ```bash
-cd client
+cd frontend
 npm run build
 cd ..
 ```
 
-2. **Set environment to production:**
+2. **Set environment for production (Django):**
 ```bash
-export NODE_ENV=production
+export DJANGO_SETTINGS_MODULE=maritime_project.settings
+export DJANGO_SECRET_KEY=your_production_secret
 ```
 
-3. **Start with PM2:**
+3. **Start with Gunicorn (example):**
 ```bash
-npm install -g pm2
-pm2 start src/server.js --name vessel-tracking
-pm2 save
+pip install gunicorn
+gunicorn maritime_project.wsgi:application --bind 0.0.0.0:8000 --workers 4
 ```
 
 ## Support
